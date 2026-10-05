@@ -10,3 +10,7 @@ struct Member {
     char gender;               // giới tính: M-ale, F-emale , 0-biết
     std::string birthDate;     // ngày sinh theo định dạng dd-mm-yyyy
     std::string notes;         // ghi chú tự do về thành viên.
+
+    // giá trị mặc định giúp một Member mới luôn ở trạng thái hợp lệ ban đầu.
+    Member() : id(0), spouseId(0), name(), gender('O'), birthDate(), notes() {}
+};
