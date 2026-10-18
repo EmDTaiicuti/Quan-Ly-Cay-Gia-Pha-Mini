@@ -164,3 +164,61 @@ int DfsSearchByName(
 
     return found;
 }
+// ===================== BFS =====================
+
+// BFS theo từng thế hệ.
+// Mỗi vòng while xử lý đúng "levelSize" phần tử
+// = toàn bộ một đời.
+// Con của họ (đi theo firstChild rồi nextSibling)
+// được xếp hàng cho đời kế tiếp.
+// Big-O: Thời gian O(n);
+// Bộ nhớ O(w) với w là số người đông nhất trong một thế hệ.
+
+void BfsPrintByGeneration(FamilyNode* root) {
+
+    if (root == nullptr) {
+        std::cout << "Cây gia phả đang rỗng.\n";
+        return;
+    }
+
+    NodeQueue queue;
+
+    QueueInit(queue);
+
+    Enqueue(queue, root);
+
+    int generation = 1;
+
+    while (queue.size > 0) {
+
+        int levelSize = queue.size;
+        // Chốt số lượng của đời hiện tại
+        // TRƯỚC khi thêm con vào hàng.
+
+        std::cout << "Đời " << generation << ":\n";
+
+        for (int i = 0; i < levelSize; ++i) {
+
+            FamilyNode* current = Dequeue(queue);
+
+            std::cout << "    "
+                      << DescribeMember(current->data);
+
+            if (current->spouse != nullptr) {
+                std::cout << "  &  "
+                          << DescribeMember(current->spouse->data);
+            }
+
+            std::cout << "\n";
+
+            for (FamilyNode* child = current->firstChild;
+                 child != nullptr;
+                 child = child->nextSibling) {
+
+                Enqueue(queue, child);
+            }
+        }
+
+        ++generation;
+    }
+}
