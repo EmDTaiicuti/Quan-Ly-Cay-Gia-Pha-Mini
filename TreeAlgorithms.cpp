@@ -65,3 +65,102 @@ static std::string ToLower(const std::string& text) {
 
     return result;
 }
+// ===================== DFS =====================
+
+// DFS tìm đường "xuất xứ": in từ người cần tìm ngược lên thủy tổ.
+// Cách hoạt động: duyệt sâu xuống con (firstChild),
+// duyệt ngang qua anh em (nextSibling).
+// Khi tìm thấy mục tiêu thì trả true; khi đệ quy QUAY LUI,
+// mỗi tổ tiên trên đường về sẽ tự in tên mình,
+// nhờ đó đường đi được in ra mà không cần mảng/ngăn xếp phụ.
+// Big-O: Thời gian O(n) (xấu nhất duyệt hết cây);
+// Bộ nhớ O(h) cho ngăn xếp đệ quy (h = chiều cao).
+
+bool DfsPrintLineage(FamilyNode* node, int targetId) {
+    for (FamilyNode* current = node;
+         current != nullptr;
+         current = current->nextSibling) {
+
+        if (current->data.id == targetId) {
+            std::cout << DescribeMember(current->data);
+            return true;
+        }
+
+        if (current->spouse != nullptr &&
+            current->spouse->data.id == targetId) {
+
+            // Mục tiêu là vợ/chồng nhập gia:
+            // nối dòng họ thông qua người huyết thống.
+            std::cout << DescribeMember(current->spouse->data)
+                      << " [vợ/chồng của "
+                      << current->data.name << "]";
+
+            return true;
+        }
+
+        if (DfsPrintLineage(current->firstChild, targetId)) {
+            // Tìm sâu xuống nhánh con
+            std::cout << "  <-  "
+                      << DescribeMember(current->data);
+
+            // In khi quay lui
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+// DFS (tiền tự) tìm mọi thành viên có tên chứa từ khóa
+// (không phân biệt hoa/thường với ký tự ASCII).
+// Big-O: Thời gian O(n * L) với L là độ dài tên;
+// Bộ nhớ O(h).
+
+int DfsSearchByName(
+    FamilyNode* node,
+    const std::string& keyword
+) {
+    int found = 0;
+
+    const std::string key = ToLower(keyword);
+
+    for (FamilyNode* current = node;
+         current != nullptr;
+         current = current->nextSibling) {
+
+        if (ToLower(current->data.name).find(key)
+            != std::string::npos) {
+
+            std::cout << "  - "
+                      << DescribeMember(current->data)
+                      << "  (Đời "
+                      << GetDepth(current) + 1
+                      << ")\n";
+
+            ++found;
+        }
+
+        if (current->spouse != nullptr &&
+            ToLower(current->spouse->data.name).find(key)
+            != std::string::npos) {
+
+            std::cout << "  - "
+                      << DescribeMember(current->spouse->data)
+                      << "  (vợ/chồng của "
+                      << current->data.name
+                      << ", Đời "
+                      << GetDepth(current) + 1
+                      << ")\n";
+
+            ++found;
+        }
+
+        found += DfsSearchByName(
+            current->firstChild,
+            keyword
+        );
+    }
+
+    return found;
+}
