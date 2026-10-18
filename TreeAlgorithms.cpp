@@ -410,3 +410,80 @@ void SortAllSiblings(FamilyNode* node) {
     }
 }
 
+// ===================== THỐNG KÊ =====================
+
+static void CollectStats(const FamilyNode* node, TreeStats& stats) {
+    ++stats.total;
+
+    if (node->data.gender == 'M')
+        ++stats.male;
+    else
+        ++stats.female;
+
+    if (node->spouse != nullptr) {
+        ++stats.total;
+
+        if (node->spouse->data.gender == 'M')
+            ++stats.male;
+        else
+            ++stats.female;
+    }
+
+    for (const FamilyNode* child = node->firstChild;
+         child != nullptr;
+         child = child->nextSibling) {
+        CollectStats(child, stats);
+    }
+}
+
+// Đếm số người trong nhánh gốc tại node (node + vợ/chồng + toàn bộ con cháu),
+// KHÔNG tính anh em của node.
+// Big-O: O(m) với m là kích thước nhánh.
+int CountSubtree(const FamilyNode* node) {
+    if (node == nullptr)
+        return 0;
+
+    int count = 1 + (node->spouse != nullptr ? 1 : 0);
+
+    for (const FamilyNode* child = node->firstChild;
+         child != nullptr;
+         child = child->nextSibling) {
+        count += CountSubtree(child);
+    }
+
+    return count;
+}
+
+// Chiều cao cây = số thế hệ (cây chỉ có thủy tổ -> 1).
+// Big-O: Thời gian O(n); Bộ nhớ O(h).
+int TreeHeight(const FamilyNode* node) {
+    if (node == nullptr)
+        return 0;
+
+    int maxChildHeight = 0;
+
+    for (const FamilyNode* child = node->firstChild;
+         child != nullptr;
+         child = child->nextSibling) {
+        maxChildHeight = std::max(
+            maxChildHeight,
+            TreeHeight(child)
+        );
+    }
+
+    return 1 + maxChildHeight;
+}
+
+// Big-O: O(n).
+TreeStats ComputeStats(const FamilyNode* root) {
+    TreeStats stats = {0, 0, 0, 0};
+
+    if (root == nullptr)
+        return stats;
+
+    CollectStats(root, stats);
+
+    stats.generations = TreeHeight(root);
+
+    return stats;
+}
