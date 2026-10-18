@@ -278,3 +278,135 @@ FamilyNode* FindLca(FamilyNode* a, FamilyNode* b) {
 
     return a;
 }
+// Tính khoảng cách quan hệ giữa hai người.
+//
+// Công thức:
+// distance = depthA + depthB - 2 * depthLca
+//
+// Trả về -1 nếu không có tổ tiên chung.
+//
+// Big-O:
+// Thời gian O(h).
+// Bộ nhớ O(1).
+
+int FamilyDistance(
+    FamilyNode* a,
+    FamilyNode* b
+) {
+    FamilyNode* lca = FindLca(a, b);
+
+    if (lca == nullptr) {
+        return -1;
+    }
+
+    return GetDepth(a)
+         + GetDepth(b)
+         - 2 * GetDepth(lca);
+}
+
+
+// ===================== SẮP XẾP ANH EM =====================
+
+// Selection Sort trên danh sách liên kết anh em.
+//
+// Sắp xếp năm sinh giảm dần:
+// - Người sinh muộn nhất đứng đầu.
+// - Nếu cùng năm thì so tiếp tháng và ngày.
+// - Nếu ngày sinh bằng nhau thì giữ thứ tự cũ.
+//
+// Không hoán đổi dữ liệu của node.
+// Chỉ thay đổi con trỏ nextSibling.
+//
+// Big-O:
+// Thời gian O(k^2), với k là số anh em.
+// Bộ nhớ O(1).
+
+FamilyNode* SortSiblingList(FamilyNode* head) {
+    FamilyNode* sortedHead = nullptr;
+    FamilyNode* sortedTail = nullptr;
+
+    while (head != nullptr) {
+        FamilyNode* maxNode = head;
+        FamilyNode* maxPrev = nullptr;
+        FamilyNode* prev = head;
+
+        // Tìm node có ngày sinh lớn nhất
+        for (
+            FamilyNode* current = head->nextSibling;
+            current != nullptr;
+            prev = current, current = current->nextSibling
+        ) {
+            if (
+                DateToKey(current->data.birth)
+                > DateToKey(maxNode->data.birth)
+            ) {
+                maxNode = current;
+                maxPrev = prev;
+            }
+        }
+
+        // Tháo maxNode khỏi danh sách còn lại
+        if (maxPrev == nullptr) {
+            // maxNode đang là đầu danh sách
+            head = maxNode->nextSibling;
+        } else {
+            // Nối vòng qua maxNode
+            maxPrev->nextSibling = maxNode->nextSibling;
+        }
+
+        maxNode->nextSibling = nullptr;
+
+        // Nối maxNode vào đuôi danh sách đã sắp xếp
+        if (sortedHead == nullptr) {
+            sortedHead = maxNode;
+            sortedTail = maxNode;
+        } else {
+            sortedTail->nextSibling = maxNode;
+            sortedTail = maxNode;
+        }
+    }
+
+    return sortedHead;
+}
+
+
+// Sắp xếp các con của một người.
+// Cập nhật firstChild vì người con đứng đầu có thể thay đổi.
+//
+// Big-O: O(k^2).
+
+void SortChildrenOf(FamilyNode* parent) {
+    if (parent == nullptr) {
+        return;
+    }
+
+    parent->firstChild = SortSiblingList(
+        parent->firstChild
+    );
+}
+
+
+// Sắp xếp đồng loạt mọi gia đình trong cây bằng đệ quy.
+//
+// Big-O:
+// Tổng O(sum k_i^2), tối đa O(n^2).
+// Bộ nhớ O(h).
+
+void SortAllSiblings(FamilyNode* node) {
+    if (node == nullptr) {
+        return;
+    }
+
+    // Sắp xếp danh sách con của node hiện tại
+    SortChildrenOf(node);
+
+    // Tiếp tục sắp xếp các nhánh con
+    for (
+        FamilyNode* child = node->firstChild;
+        child != nullptr;
+        child = child->nextSibling
+    ) {
+        SortAllSiblings(child);
+    }
+}
+
