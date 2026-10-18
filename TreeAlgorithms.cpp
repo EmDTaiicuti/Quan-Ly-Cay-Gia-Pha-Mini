@@ -222,3 +222,59 @@ void BfsPrintByGeneration(FamilyNode* root) {
         ++generation;
     }
 }
+// ===================== ĐỘ SÂU, LCA, KHOẢNG CÁCH =====================
+
+// Độ sâu = số cạnh đi ngược lên gốc nhờ con trỏ parent.
+// Thủy tổ có độ sâu 0.
+// Big-O: Thời gian O(h); Bộ nhớ O(1).
+
+int GetDepth(const FamilyNode* node) {
+    int depth = 0;
+
+    while (node != nullptr && node->parent != nullptr) {
+        node = node->parent;
+        ++depth;
+    }
+
+    return depth;
+}
+
+
+// Tổ tiên chung gần nhất (LCA) bằng con trỏ parent:
+// 1. Đưa người sâu hơn nhích lên cho cùng độ sâu với người kia.
+// 2. Cả hai cùng nhích lên từng bước cho tới khi trùng nhau
+//    -> đó là LCA.
+// Yêu cầu a, b là người huyết thống
+// (UI đã quy vợ/chồng về người huyết thống).
+// Big-O: Thời gian O(h); Bộ nhớ O(1).
+
+FamilyNode* FindLca(FamilyNode* a, FamilyNode* b) {
+    if (a == nullptr || b == nullptr) {
+        return nullptr;
+    }
+
+    int depthA = GetDepth(a);
+    int depthB = GetDepth(b);
+
+    while (depthA > depthB) {
+        a = a->parent;
+        --depthA;
+    }
+
+    while (depthB > depthA) {
+        b = b->parent;
+        --depthB;
+    }
+
+    while (a != b) {
+        a = a->parent;
+        b = b->parent;
+
+        if (a == nullptr || b == nullptr) {
+            return nullptr;
+            // Khác cây (không xảy ra trong 1 cây hợp lệ).
+        }
+    }
+
+    return a;
+}
