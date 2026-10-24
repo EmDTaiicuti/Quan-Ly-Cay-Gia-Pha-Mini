@@ -153,6 +153,29 @@ bool DeleteBranch(FamilyTree& familyTree, int id) {
     Node* target = FindMember(familyTree.root, id);
     if (!target) return false;
 
+    Node* spouse = target->member.spouseId ? FindMember(familyTree.root, target->member.spouseId) : 0;
+    if (spouse && spouse != target && spouse->parent == target->parent) {
+        ClearBranchSpouseLinks(spouse, familyTree.root);
+        Node* spouseParent = spouse->parent;
+        Node*& spouseHead = spouseParent ? spouseParent->firstChild : familyTree.root;
+        Node*& spouseTail = spouseParent ? spouseParent->lastChild : familyTree.lastRoot;
+        Node* beforeSpouse = 0;
+        Node* currentSpouse = spouseHead;
+        while (currentSpouse && currentSpouse != spouse) {
+            beforeSpouse = currentSpouse;
+            currentSpouse = currentSpouse->nextSibling;
+        }
+        if (currentSpouse) {
+            if (beforeSpouse) beforeSpouse->nextSibling = spouse->nextSibling;
+            else spouseHead = spouse->nextSibling;
+            if (spouseTail == spouse) spouseTail = beforeSpouse;
+            const int spouseCount = CountBranch(spouse);
+            spouse->nextSibling = 0;
+            familyTree.memberCount -= spouseCount;
+            DestroyTree(spouse);
+        }
+    }
+
     ClearBranchSpouseLinks(target, familyTree.root);
 
     Node* parent = target->parent;
