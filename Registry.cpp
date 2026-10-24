@@ -31,12 +31,6 @@ bool Parse(const std::string& line, std::string fields[], int count) {
 bool ParseInt(const std::string& text, int& value) {
     std::istringstream input(text); input >> value; return input && input.eof();
 }
-std::string UnquoteBOM(std::string value) {
-    if (value.size() >= 3 && static_cast<unsigned char>(value[0]) == 0xEF &&
-        static_cast<unsigned char>(value[1]) == 0xBB && static_cast<unsigned char>(value[2]) == 0xBF)
-        value.erase(0, 3);
-    return value;
-}
 }
 
 void DestroyAchievements(AchievementList& list) {
