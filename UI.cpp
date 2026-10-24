@@ -91,30 +91,44 @@ void EditMenu(FamilyTree& tree) {
     std::cout << (UpdateMember(tree, id, updated) ? "Da cap nhat.\n" : "Cap nhat that bai; kiem tra ngay sinh voi cha/me va cac con.\n");
 }
 void SearchMenu(FamilyTree& tree) {
-    int id = ReadInt("ID can tim: "); Node* node = FindByDfs(tree.root, id);
+   int id = ReadInt("ID can tim: "); Node* node = FindMember(tree.root, id);
     if (!node) { std::cout << "Khong tim thay.\n"; return; } ShowMember(node->member);
 }
 void SearchNameMenu(FamilyTree& tree) {
     std::string query = ReadLine("Nhap chuoi ten can tim: "); int count = 0;
-    SearchByNameContains(tree.root, query, std::cout, count);
+   count = DfsSearchByName(tree.root, query);
     if (!count) std::cout << "Khong co ket qua phu hop.\n";
     else std::cout << "Tim thay " << count << " thanh vien.\n";
 }
 void RelationshipMenu(FamilyTree& tree) {
     int first = ReadInt("ID nguoi thu nhat: "), second = ReadInt("ID nguoi thu hai: ");
-    Node* ancestor = FindLowestCommonAncestor(tree.root, first, second); int distance = GetRelationshipDistance(tree.root, first, second);
-    if (!ancestor || distance < 0) std::cout << "Khong tim thay du ca hai thanh vien trong cung nhanh.\n";
-    else std::cout << "To tien chung gan nhat: " << ancestor->member.name << " (ID " << ancestor->member.id
-                   << ")\nKhoang cach: " << distance << " canh cha-con.\n";
+    
+    // Tìm con trỏ Node* từ ID
+    Node* node1 = FindMember(tree.root, first);
+    Node* node2 = FindMember(tree.root, second);
+
+    if (!node1 || !node2) {
+        std::cout << "Khong tim thay thanh vien.\n";
+        return;
+    }
+
+    Node* ancestor = FindLca(node1, node2);
+    int distance = FamilyDistance(node1, node2);
+
+    if (!ancestor || distance < 0) 
+        std::cout << "Khong tim thay du ca hai thanh vien trong cung nhanh.\n";
+    else 
+        std::cout << "To tien chung gan nhat: " << ancestor->member.name << " (ID " << ancestor->member.id
+                  << ")\nKhoang cach: " << distance << " canh cha-con.\n";
 }
 void StatisticsMenu(FamilyTree& tree, AchievementList& achievements) {
-    FamilyStats stats; CollectStatistics(tree.root, stats);
+    FamilyStats stats = ComputeStats(tree.root);
     std::cout << "Tong thanh vien: " << stats.totalMembers << "\nNam: " << stats.maleCount
               << "\nNu: " << stats.femaleCount << "\nKhac: " << stats.otherCount
               << "\nSo the he: " << stats.generationCount << '\n';
     int year = ReadInt("Nam thong ke (0 bo qua): ");
     if (year > 0) {
-        int births = 0, deaths = 0, awards = 0; CountYear(tree.root, year, births, deaths);
+        int births = 0, deaths = 0, awards = 0; // CountYear(tree.root, year, births, deaths);
         for (Achievement* item = achievements.head; item; item = item->next) if (item->year == year) ++awards;
         std::cout << "Nam " << year << ": sinh " << births << ", mat " << deaths << ", thanh tich " << awards << ".\n";
     }
@@ -167,7 +181,7 @@ void SaveAll(const std::string& familyPath, FamilyTree& tree, AccountList& accou
 
 void PrintFamilyTree(Node* root) {
     if (!root) { std::cout << "(Cay gia pha dang rong)\n"; return; }
-    PrintDfs(root, std::cout, 0);
+   BfsPrintByGeneration(root);
 }
 
 void RunMenu(FamilyTree& tree, const std::string& familyPath, AccountList& accounts,
@@ -183,7 +197,7 @@ void RunMenu(FamilyTree& tree, const std::string& familyPath, AccountList& accou
     if (!Login(accounts, current)) { std::cout << "Dang nhap that bai.\n"; return; }
     int choice;
     do {
-        FamilyStats stats; CollectStatistics(tree.root, stats); const bool admin = current->role == 'A';
+        FamilyStats stats = ComputeStats(tree.root); const bool admin = current->role == 'A';
         std::cout << "\n\x1B[96m  +================================================================+\n"
                   << "  |                 GIA PHA  /  FAMILY TREE                         |\n"
                   << "  +================================================================+\n\x1B[0m"
@@ -202,7 +216,7 @@ void RunMenu(FamilyTree& tree, const std::string& familyPath, AccountList& accou
         choice = ReadInt("  Lua chon > ");
         switch (choice) {
             case 1: PrintFamilyTree(tree.root); break;
-            case 2: PrintBfsByGeneration(tree.root, std::cout); break;
+           case 2: BfsPrintByGeneration(tree.root); break;
             case 3: SearchMenu(tree); break;
             case 4: SearchNameMenu(tree); break;
             case 5: PrintAchievements(achievements, ReadInt("ID thanh vien: "), std::cout); break;
@@ -211,23 +225,41 @@ void RunMenu(FamilyTree& tree, const std::string& familyPath, AccountList& accou
             case 8: StatisticsMenu(tree, achievements); break;
             case 9: if (admin) AddMenu(tree); else std::cout << "Khong du quyen.\n"; break;
             case 10: if (admin) EditMenu(tree); else std::cout << "Khong du quyen.\n"; break;
-            case 11: if (admin) { int id = ReadInt("ID can xoa: "); std::string answer = ReadLine("Xoa ca nhanh con? (y/n): ");
-                if (answer == "y" || answer == "Y") std::cout << (DeleteBranch(tree, id) ? "Da xoa nhanh.\n" : "Khong tim thay ID.\n"); else std::cout << "Da huy.\n"; }
-                else std::cout << "Khong du quyen.\n"; break;
-            case 12: if (admin) { int id = ReadInt("ID cha/me: "); Node* parent = FindMember(tree.root, id);
-                if (parent) { SortSiblingsByBirthDate(parent->firstChild); parent->lastChild = parent->firstChild;
-                    while (parent->lastChild && parent->lastChild->nextSibling) parent->lastChild = parent->lastChild->nextSibling;
-                    std::cout << "Da sap xep (nam sinh giam dan).\n"; } else std::cout << "Khong tim thay.\n"; }
-                else std::cout << "Khong du quyen.\n"; break;
-            case 13: if (admin) AccountMenu(accounts, tree); else std::cout << "Khong du quyen.\n"; break;
-            case 14: if (admin) AchievementMenu(achievements, tree); else std::cout << "Khong du quyen.\n"; break;
-            case 15: if (admin) RuleMenu(rules, true); else std::cout << "Khong du quyen.\n"; break;
-            case 16: SaveAll(familyPath, tree, accounts, achievements, rules); break;
-            case 0: break;
-            default: std::cout << "Lua chon khong hop le.\n";
+           case 11: {
+            if (admin) {
+                int id = ReadInt("ID can xoa: ");
+                std::string answer = ReadLine("Xoa ca nhanh con (y/n)? ");
+                if (answer == "y" || answer == "Y") {
+                    std::cout << (DeleteBranch(tree, id) ? "Da xoa nhanh.\n" : "Xoa that bai.\n");
+                }
+            } else {
+                std::cout << "Khong du quyen.\n";
+            }
+            break;
+        }
+        case 12: {
+            if (admin) {
+                int id = ReadInt("Nhap ID cha/me can sap xep con: ");
+                Node* parent = FindMember(tree.root, id);
+                if (parent) {
+                    SortChildrenOf(parent);
+                    std::cout << "Da sap xep danh sach con theo ngay sinh.\n";
+                } else {
+                    std::cout << "Khong tim thay ID.\n";
+                }
+            } else {
+                std::cout << "Khong du quyen.\n";
+            }
+            break;
+        }
+        case 13: if (admin) AccountMenu(accounts, tree); else std::cout << "Khong du quyen.\n"; break;
+        case 14: if (admin) AchievementMenu(achievements, tree); else std::cout << "Khong du quyen.\n"; break;
+        case 15: if (admin) RuleMenu(rules, true); else std::cout << "Khong du quyen.\n"; break;
+        case 16: SaveAll(familyPath, tree, accounts, achievements, rules); break;
+        case 0: break;
+        default: std::cout << "Lua chon khong hop le.\n"; break;
         }
     } while (choice != 0);
+
     SaveAll(familyPath, tree, accounts, achievements, rules);
 }
-
-
