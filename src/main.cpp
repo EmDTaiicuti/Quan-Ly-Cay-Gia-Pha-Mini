@@ -1,0 +1,31 @@
+#include "FamilyNode.h"
+#include "TreeCore.h"
+#include "FileManager.h"
+#include "UI.h"
+#include "Auth.h"
+#include "Registry.h"
+#include <iostream>
+#include <stdexcept>
+
+int main() {
+    FamilyTree familyTree; InitializeTree(familyTree);
+    AccountList accounts; AchievementList achievements; RuleList rules;
+    const std::string familyPath = "data/family.csv";
+    bool loaded = LoadFromCsv(familyPath, familyTree) && LoadAccounts("data/accounts.csv", accounts) &&
+                  LoadAchievements("data/achievements.csv", achievements) && LoadRules("data/family_rules.csv", rules);
+    if (!loaded) {
+        std::cerr << "Khong the mo/tao mot trong cac file du lieu.\n";
+        DestroyTree(familyTree.root); DestroyAccounts(accounts); DestroyAchievements(achievements); DestroyRules(rules); return 1;
+    }
+    try {
+        RunMenu(familyTree, familyPath, accounts, achievements, rules);
+    } catch (const std::runtime_error& error) {
+        std::cout << "\n" << error.what() << " Ket thuc chuong trinh an toan.\n";
+    }
+    bool saved = SaveToCsv(familyPath, familyTree) && SaveAccounts("data/accounts.csv", accounts) &&
+                 SaveAchievements("data/achievements.csv", achievements) && SaveRules("data/family_rules.csv", rules);
+    if (!saved) std::cerr << "Canh bao: khong the luu day du du lieu.\n";
+    DestroyTree(familyTree.root); DestroyAccounts(accounts); DestroyAchievements(achievements); DestroyRules(rules);
+    return saved ? 0 : 1;
+}
+
