@@ -83,17 +83,4 @@ Admin cũ sẽ thấy cùng phả đồ (`data\profiles\u_...`). Nếu `data\acc
 Phím tắt: `Ctrl+S` lưu · `Ctrl+F` tìm · `Ctrl+N` thêm con · `Ctrl+M` thêm vợ/chồng · `F2` sửa · `F5` vừa khung ·
 `Ctrl +/−` thu phóng · `F1` hướng dẫn.
 
-## Các lỗi đã sửa so với bản Raylib
 
-1. **Xóa dâu/rể làm mất cả nhánh**: `DeleteBranch` trên con dâu xóa luôn người chồng huyết thống và toàn bộ con cháu.
-   Giờ chỉ xóa người huyết thống mới kéo theo vợ/chồng.
-2. **Dữ liệu cũ đánh dấu sai dâu/rể**: file 7 cột gán `isInLaw = spouseId > 0` nên cả hai vợ chồng đều thành dâu/rể
-   (Nguyễn Văn Minh hiện "Thành viên kết hôn vào dòng họ"). Khi nạp, `RepairFamilyLinks` sửa lại cờ và xóa `spouseId` treo.
-3. **Dâu/rể lớn tuổi hơn cha mẹ chồng bị mất khi nạp file** và không sửa hồ sơ được (bị so ngày sinh với "cha").
-4. **Sắp xếp anh chị em làm hỏng danh sách**: không cập nhật `lastChild`, lần thêm con sau bị nối sai; thứ tự cũ là út
-   trước. Giờ anh/chị cả trước và `SortChildrenByBirthDate` cập nhật con trỏ cuối.
-5. **CSV có xuống dòng** (tiểu sử, mô tả nhiều dòng) làm vỡ file khi đọc lại. Giờ đọc được trường nhiều dòng trong ngoặc kép.
-6. **User đăng ký chỉ thấy phả đồ trống** (mỗi tài khoản một hồ sơ riêng nhưng User không được sửa). Giờ User xem phả đồ
-   do Admin quản lý.
-7. Thành tích của người đã bị xóa / không còn sau khi nhập CSV được dọn; tổ tiên chung tính dâu/rể theo vợ/chồng;
-   đường dẫn file Unicode (thư mục có dấu tiếng Việt) mở được; các dòng CSV lỗi được báo số lượng thay vì im lặng bỏ qua.
