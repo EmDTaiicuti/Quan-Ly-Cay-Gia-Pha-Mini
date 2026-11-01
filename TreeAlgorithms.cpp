@@ -1,17 +1,18 @@
 #include "TreeAlgorithms.h"
 #include "TreeCore.h"
 #include <ostream>
+#include <vector>
 
 namespace {
 struct QueueNode {
-    Node* treeNode;  // NĂºt gia pháº£ Ä‘ang chá» xá»­ lĂ½.
-    int depth;       // Tháº¿ há»‡ cá»§a nĂºt trong lÆ°á»£t BFS.
-    QueueNode* next; // Pháº§n tá»­ káº¿ tiáº¿p trong hĂ ng Ä‘á»£i.
+    Node* treeNode;  // NÃºt gia pháº£ Ä‘ang chá» xá»­ lÃ½.
+    int depth;       // Tháº¿ há»‡ cá»§a nÃºt trong lÆ°á»£t BFS.
+    QueueNode* next; // Pháº§n tá»­ káº¿ tiáº¿p trong hÃ ng Ä‘á»£i.
     QueueNode(Node* value, int level) : treeNode(value), depth(level), next(0) {}
 };
 struct Queue {
-    QueueNode* front; // Äáº§u hĂ ng Ä‘á»£i, nÆ¡i láº¥y pháº§n tá»­ ra.
-    QueueNode* back;  // Cuá»‘i hĂ ng Ä‘á»£i, nÆ¡i thĂªm pháº§n tá»­ vĂ o.
+    QueueNode* front; // Äáº§u hÃ ng Ä‘á»£i, nÆ¡i láº¥y pháº§n tá»­ ra.
+    QueueNode* back;  // Cuá»‘i hÃ ng Ä‘á»£i, nÆ¡i thÃªm pháº§n tá»­ vÃ o.
     Queue() : front(0), back(0) {}
     void Push(Node* node, int depth) {
         QueueNode* item = new QueueNode(node, depth);
@@ -35,10 +36,25 @@ void CountRecursive(Node* node, int depth, FamilyStats& stats) {
     CountRecursive(node->firstChild, depth + 1, stats);
     CountRecursive(node->nextSibling, depth, stats);
 }
+
+void PrintTree(Node* node, Node* treeRoot, std::ostream& output, int depth) {
+    if (!node) return;
+    if (!node->member.isInLaw) {
+        for (int i = 0; i < depth; ++i) output << "  ";
+        output << "|- " << node->member.name << " [ID: " << node->member.id
+               << "] " << node->member.birthDate;
+        Node* spouse = node->member.spouseId ? FindMember(treeRoot, node->member.spouseId) : 0;
+        if (spouse) output << " | Vo/chong: " << spouse->member.name << " [ID: " << spouse->member.id << "]";
+        output << '\n';
+        PrintTree(node->firstChild, treeRoot, output, depth + 1);
+        if (spouse) PrintTree(spouse->firstChild, treeRoot, output, depth + 1);
+    }
+    PrintTree(node->nextSibling, treeRoot, output, depth);
+}
 }
 
 Node* FindByDfs(Node* node, int id) {
-    // O(1) tá»‘t nháº¥t; O(n) trung bĂ¬nh vĂ  xáº¥u nháº¥t.
+    // O(1) tá»‘t nháº¥t; O(n) trung bÃ¬nh vÃ  xáº¥u nháº¥t.
     if (!node) return 0;
     if (node->member.id == id) return node;
     Node* found = FindByDfs(node->firstChild, id);
@@ -46,27 +62,31 @@ Node* FindByDfs(Node* node, int id) {
 }
 
 void PrintDfs(Node* node, std::ostream& output, int depth) {
-    // DFS in cĂ¢y: O(n) thá»i gian, O(h) ngÄƒn xáº¿p Ä‘á»‡ quy.
-    if (!node) return;
-    for (int i = 0; i < depth; ++i) output << "  ";
-    output << "|- " << node->member.name << " [ID: " << node->member.id
-           << "] " << node->member.birthDate << '\n';
-    PrintDfs(node->firstChild, output, depth + 1);
-    PrintDfs(node->nextSibling, output, depth);
+    // DFS in cÃ¢y: O(n) thá»i gian, O(h) ngÄƒn xáº¿p Ä‘á»‡ quy.
+    PrintTree(node, node, output, depth);
 }
 
 void PrintBfsByGeneration(Node* root, std::ostream& output) {
-    // BFS: O(n) thá»i gian, O(w) bá»™ nhá»› vá»›i w lĂ  bá» rá»™ng lá»›n nháº¥t cá»§a cĂ¢y.
+    // BFS: O(n) thá»i gian, O(w) bá»™ nhá»› vá»›i w lÃ  bá» rá»™ng lá»›n nháº¥t cá»§a cÃ¢y.
     Queue queue;
     for (Node* current = root; current; current = current->nextSibling) queue.Push(current, 1);
     int generation = 0;
     while (queue.front) {
         QueueNode* item = queue.Pop();
         if (item->depth != generation) { generation = item->depth; output << "\nThe he " << generation << ":\n"; }
-        output << "  " << item->treeNode->member.name << " (ID: " << item->treeNode->member.id
-               << ", " << item->treeNode->member.birthDate << ")\n";
-        for (Node* child = item->treeNode->firstChild; child; child = child->nextSibling)
-            queue.Push(child, item->depth + 1);
+        Node* member = item->treeNode;
+        if (!member->member.isInLaw) {
+            output << "  " << member->member.name << " (ID: " << member->member.id
+                   << ", " << member->member.birthDate << ")";
+            Node* spouse = member->member.spouseId ? FindMember(root, member->member.spouseId) : 0;
+            if (spouse) output << " | Vo/chong: " << spouse->member.name << " (ID: " << spouse->member.id << ")";
+            output << '\n';
+            for (Node* child = member->firstChild; child; child = child->nextSibling)
+                if (!child->member.isInLaw) queue.Push(child, item->depth + 1);
+            if (spouse)
+                for (Node* child = spouse->firstChild; child; child = child->nextSibling)
+                    if (!child->member.isInLaw) queue.Push(child, item->depth + 1);
+        }
         delete item;
     }
 }
@@ -94,12 +114,12 @@ Node* FindLcaFromNodes(Node* first, Node* second) {
 }
 
 Node* FindLowestCommonAncestor(Node* root, int firstId, int secondId) {
-    // Hai láº§n tĂ¬m O(n), sau Ä‘Ă³ leo theo parent O(h); bá»™ nhá»› phá»¥ O(1).
+    // Hai láº§n tÃ¬m O(n), sau Ä‘Ã³ leo theo parent O(h); bá»™ nhá»› phá»¥ O(1).
     return FindLcaFromNodes(FindByDfs(root, firstId), FindByDfs(root, secondId));
 }
 
 int GetRelationshipDistance(Node* root, int firstId, int secondId) {
-    // Hai láº§n tĂ¬m O(n), leo cĂ¢y O(h), bá»™ nhá»› phá»¥ O(1); trĂ¡nh tĂ¬m cĂ¢y thĂªm láº§n ná»¯a.
+    // Hai láº§n tÃ¬m O(n), leo cÃ¢y O(h), bá»™ nhá»› phá»¥ O(1); trÃ¡nh tÃ¬m cÃ¢y thÃªm láº§n ná»¯a.
     Node* first = FindByDfs(root, firstId);
     Node* second = FindByDfs(root, secondId);
     if (!first || !second) return -1;
@@ -128,7 +148,7 @@ Node* QuickSortSiblingChain(Node* head, Node*& tail) {
         return head;
     }
 
-    // Chá»n ngĂ y sinh nĂºt Ä‘áº§u lĂ m pivot; phĂ¢n vĂ¹ng báº±ng cĂ¡ch thĂ¡o/gáº¯n láº¡i liĂªn káº¿t.
+    // Chá»n ngÃ y sinh nÃºt Ä‘áº§u lÃ m pivot; phÃ¢n vÃ¹ng báº±ng cÃ¡ch thÃ¡o/gáº¯n láº¡i liÃªn káº¿t.
     Node* slow = head;
     Node* fast = head;
     while (fast->nextSibling && fast->nextSibling->nextSibling) {
@@ -164,13 +184,40 @@ Node* QuickSortSiblingChain(Node* head, Node*& tail) {
 }
 
 void SortSiblingsByBirthDate(Node*& firstSibling) {
-    // Quick Sort relink node: O(n log n) trung bĂ¬nh, O(n^2) xáº¥u nháº¥t,
-    // O(log n) ngÄƒn xáº¿p trung bĂ¬nh; khĂ´ng sao chĂ©p/Ä‘á»•i dá»¯ liá»‡u Member.
+    // Quick Sort relink node: O(n log n) trung bÃ¬nh, O(n^2) xáº¥u nháº¥t,
+    // O(log n) ngÄƒn xáº¿p trung bÃ¬nh; khÃ´ng sao chÃ©p/Ä‘á»•i dá»¯ liá»‡u Member.
+    std::vector<Node*> spouses;
+    Node* bloodline = 0;
     Node* tail = 0;
-    firstSibling = QuickSortSiblingChain(firstSibling, tail);
+    while (firstSibling) {
+        Node* current = firstSibling;
+        firstSibling = firstSibling->nextSibling;
+        current->nextSibling = 0;
+        if (current->member.isInLaw) spouses.push_back(current);
+        else AppendDetached(bloodline, tail, current);
+    }
+    bloodline = QuickSortSiblingChain(bloodline, tail);
+    Node* sorted = 0;
+    tail = 0;
+    while (bloodline) {
+        Node* current = bloodline;
+        bloodline = bloodline->nextSibling;
+        current->nextSibling = 0;
+        AppendDetached(sorted, tail, current);
+        for (std::size_t i = 0; i < spouses.size(); ++i) {
+            if (spouses[i] && spouses[i]->member.spouseId == current->member.id) {
+                AppendDetached(sorted, tail, spouses[i]);
+                spouses[i] = 0;
+                break;
+            }
+        }
+    }
+    for (std::size_t i = 0; i < spouses.size(); ++i)
+        if (spouses[i]) AppendDetached(sorted, tail, spouses[i]);
+    firstSibling = sorted;
 }
 void CollectStatistics(Node* root, FamilyStats& stats) {
-    // ThÄƒm má»—i nĂºt má»™t láº§n: O(n) thá»i gian, O(h) ngÄƒn xáº¿p.
+    // ThÄƒm má»—i nÃºt má»™t láº§n: O(n) thá»i gian, O(h) ngÄƒn xáº¿p.
     stats = FamilyStats(); CountRecursive(root, 1, stats);
 }
 
@@ -185,9 +232,38 @@ void CollectStatistics(Node* root, FamilyStats& stats) {
 namespace {
 std::string LowerAscii(const std::string& value) {
     std::string result = value;
-    for (std::size_t i = 0; i < result.size(); ++i)
-        if (result[i] >= 'A' && result[i] <= 'Z') result[i] = static_cast<char>(result[i] - 'A' + 'a');
-    return result;
+    struct Accent { const char* source; const char* target; };
+    static const Accent accents[] = {
+        {"Ã¡","a"},{"Ã ","a"},{"áº£","a"},{"Ã£","a"},{"áº¡","a"},{"Äƒ","a"},{"áº¯","a"},{"áº±","a"},{"áº³","a"},{"áºµ","a"},{"áº·","a"},{"Ã¢","a"},{"áº¥","a"},{"áº§","a"},{"áº©","a"},{"áº«","a"},{"áº­","a"},
+        {"Ã©","e"},{"Ã¨","e"},{"áº»","e"},{"áº½","e"},{"áº¹","e"},{"Ãª","e"},{"áº¿","e"},{"á»","e"},{"á»ƒ","e"},{"á»…","e"},{"á»‡","e"},
+        {"Ã­","i"},{"Ã¬","i"},{"á»‰","i"},{"Ä©","i"},{"á»‹","i"},
+        {"Ã³","o"},{"Ã²","o"},{"á»","o"},{"Ãµ","o"},{"á»","o"},{"Ã´","o"},{"á»‘","o"},{"á»“","o"},{"á»•","o"},{"á»—","o"},{"á»™","o"},{"Æ¡","o"},{"á»›","o"},{"á»","o"},{"á»Ÿ","o"},{"á»¡","o"},{"á»£","o"},
+        {"Ãº","u"},{"Ã¹","u"},{"á»§","u"},{"Å©","u"},{"á»¥","u"},{"Æ°","u"},{"á»©","u"},{"á»«","u"},{"á»­","u"},{"á»¯","u"},{"á»±","u"},
+        {"Ã½","y"},{"á»³","y"},{"á»·","y"},{"á»¹","y"},{"á»µ","y"},{"Ä‘","d"},
+        {"Ã","a"},{"Ã€","a"},{"áº¢","a"},{"Ãƒ","a"},{"áº ","a"},{"Ä‚","a"},{"áº®","a"},{"áº°","a"},{"áº²","a"},{"áº´","a"},{"áº¶","a"},{"Ã‚","a"},{"áº¤","a"},{"áº¦","a"},{"áº¨","a"},{"áºª","a"},{"áº¬","a"},
+        {"Ã‰","e"},{"Ãˆ","e"},{"áºº","e"},{"áº¼","e"},{"áº¸","e"},{"ÃŠ","e"},{"áº¾","e"},{"á»€","e"},{"á»‚","e"},{"á»„","e"},{"á»†","e"},
+        {"Ã","i"},{"ÃŒ","i"},{"á»ˆ","i"},{"Ä¨","i"},{"á»Š","i"},
+        {"Ã“","o"},{"Ã’","o"},{"á»Ž","o"},{"Ã•","o"},{"á»Œ","o"},{"Ã”","o"},{"á»","o"},{"á»’","o"},{"á»”","o"},{"á»–","o"},{"á»˜","o"},{"Æ ","o"},{"á»š","o"},{"á»œ","o"},{"á»ž","o"},{"á» ","o"},{"á»¢","o"},
+        {"Ãš","u"},{"Ã™","u"},{"á»¦","u"},{"Å¨","u"},{"á»¤","u"},{"Æ¯","u"},{"á»¨","u"},{"á»ª","u"},{"á»¬","u"},{"á»®","u"},{"á»°","u"},
+        {"Ã","y"},{"á»²","y"},{"á»¶","y"},{"á»¸","y"},{"á»´","y"},{"Ä","d"}
+    };
+    std::string folded;
+    for (std::size_t i = 0; i < result.size();) {
+        const unsigned char c = static_cast<unsigned char>(result[i]);
+        if (c >= 'A' && c <= 'Z') { folded += static_cast<char>(c - 'A' + 'a'); ++i; continue; }
+        bool matched = false;
+        for (std::size_t j = 0; j < sizeof(accents) / sizeof(accents[0]); ++j) {
+            const std::string source(accents[j].source);
+            if (result.compare(i, source.size(), source) == 0) {
+                folded += accents[j].target;
+                i += source.size();
+                matched = true;
+                break;
+            }
+        }
+        if (!matched) { folded += result[i]; ++i; }
+    }
+    return folded;
 }
 void SearchNameRecursive(Node* node, const std::string& query, std::ostream& output, int& count) {
     if (!node) return;
@@ -212,13 +288,13 @@ void CountYearRecursive(Node* node, int year, int& births, int& deaths) {
 }
 
 void SearchByNameContains(Node* root, const std::string& query, std::ostream& output, int& count) {
-    // Duyá»‡t tuyáº¿n tĂ­nh toĂ n cĂ¢y: best O(1) náº¿u khá»›p á»Ÿ nĂºt Ä‘áº§u; average/worst O(n), stack O(h).
+    // Duyá»‡t tuyáº¿n tÃ­nh toÃ n cÃ¢y: best O(1) náº¿u khá»›p á»Ÿ nÃºt Ä‘áº§u; average/worst O(n), stack O(h).
     count = 0;
     if (query.empty()) return;
     SearchNameRecursive(root, LowerAscii(query), output, count);
 }
 
 void CountYear(Node* root, int year, int& births, int& deaths) {
-    // Thá»‘ng kĂª pháº£i xĂ©t má»i thĂ nh viĂªn: O(n) thá»i gian, O(h) ngÄƒn xáº¿p Ä‘á»‡ quy.
+    // Thá»‘ng kÃª pháº£i xÃ©t má»i thÃ nh viÃªn: O(n) thá»i gian, O(h) ngÄƒn xáº¿p Ä‘á»‡ quy.
     births = 0; deaths = 0; CountYearRecursive(root, year, births, deaths);
 }
