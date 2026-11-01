@@ -1,0 +1,3 @@
+﻿username,email,salt,passwordHash,memberId,role,active
+admin,admin@family.local,18e130dcc6cc6dfc518e13cac5ea20e9a,fd2e46620eb55d9e,0,A,1
+dt,dubi2708@gmail.com,18e1313a41331a0c218e13d4ad9ae3a95,755d1d5247011ee5,0,U,1
