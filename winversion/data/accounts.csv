@@ -1,0 +1,2 @@
+﻿username,email,salt,passwordHash,memberId,role,active
+admin,admin@family.local,18e15d8b1de52aa4518e151fbb320a456,d251b85f2eae4405,0,A,1
