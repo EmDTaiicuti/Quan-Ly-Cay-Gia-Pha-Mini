@@ -1,30 +1,4 @@
-#include "UI.h"
-#include "TreeCore.h"
-#include "TreeAlgorithms.h"
-#include "FileManager.h"
-#include <cstdlib>
-#include <iostream>
 
-    std::cout << (success ? "Da them thanh vien.\n" : "That bai: ID trung/khong hop le hoac ngay sinh con som hon cha/me.\n");
-}
-void EditMenu(FamilyTree& tree) {
-    int id = ReadInt("ID can sua: "); if (!FindMember(tree.root, id)) { std::cout << "Khong tim thay.\n"; return; }
-    Member updated = ReadMember(false);
-    std::cout << (UpdateMember(tree, id, updated) ? "Da cap nhat.\n" : "Cap nhat that bai; kiem tra ngay sinh voi cha/me va cac con.\n");
-}
-void SearchMenu(FamilyTree& tree) {
-   int id = ReadInt("ID can tim: "); Node* node = FindMember(tree.root, id);
-    if (!node) { std::cout << "Khong tim thay.\n"; return; } ShowMember(node->member);
-}
-void SearchNameMenu(FamilyTree& tree) {
-    std::string query = ReadLine("Nhap chuoi ten can tim: "); int count = 0;
-   count = DfsSearchByName(tree.root, query);
-    if (!count) std::cout << "Khong co ket qua phu hop.\n";
-    else std::cout << "Tim thay " << count << " thanh vien.\n";
-}
-void RelationshipMenu(FamilyTree& tree) {
-    int first = ReadInt("ID nguoi thu nhat: "), second = ReadInt("ID nguoi thu hai: ");
-    
     // Tìm con trỏ Node* từ ID
     Node* node1 = FindMember(tree.root, first);
     Node* node2 = FindMember(tree.root, second);
