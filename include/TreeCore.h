@@ -1,6 +1,8 @@
 #ifndef TREE_CORE_H
 #define TREE_CORE_H
+
 #include "FamilyNode.h"
+
 void InitializeTree(FamilyTree& familyTree);
 void DestroyTree(Node*& node);
 Node* FindMember(Node* node, int id);
@@ -14,5 +16,6 @@ bool IsValidDate(const std::string& date);
 int CompareDates(const std::string& firstDate, const std::string& secondDate);
 std::string NormalizeDate(const std::string& date);
 bool IsBirthDateValidForParent(const std::string& childDate, const std::string& parentDate);
+
 #endif
 

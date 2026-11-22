@@ -273,4 +273,3 @@ void RunMenu(FamilyTree& tree, const std::string& familyPath, AccountList& accou
 }
 
 
-
