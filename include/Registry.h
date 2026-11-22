@@ -9,7 +9,6 @@ struct Achievement {
     Achievement* next;
     Achievement() : id(0), memberId(0), year(0), title(), organization(), description(), next(0) {}
 };
-
 struct AchievementList { Achievement* head; AchievementList() : head(0) {} };
 struct FamilyRule {
     int id; std::string title; std::string content; std::string effectiveDate;
