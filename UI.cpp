@@ -1,13 +1,5 @@
 
-Nam: " << stats.maleCount
-              << "\nNu: " << stats.femaleCount << "\nKhac: " << stats.otherCount
-              << "\nSo the he: " << stats.generationCount << '\n';
-    int year = ReadInt("Nam thong ke (0 bo qua): ");
-    if (year > 0) {
-        int births = 0, deaths = 0, awards = 0; // CountYear(tree.root, year, births, deaths);
-        for (Achievement* item = achievements.head; item; item = item->next) if (item->year == year) ++awards;
-        std::cout << "Nam " << year << ": sinh " << births << ", mat " << deaths << ", thanh tich " << awards << ".\n";
-    }
+
 }
 void AccountMenu(AccountList& accounts, FamilyTree& tree) {
     std::cout << "1. Tao tai khoan nguoi xem\n2. Khoa tai khoan\n3. Liet ke tai khoan\n";
