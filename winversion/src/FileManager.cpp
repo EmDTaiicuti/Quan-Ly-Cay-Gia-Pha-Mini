@@ -2,7 +2,6 @@
 #include "TreeCore.h"
 #include <fstream>
 #include <sstream>
-
 namespace {
 struct PendingRecord {
     Member member; int parentId; bool built; PendingRecord* next;
@@ -68,7 +67,6 @@ void SaveRecursive(std::ofstream& output, Node* node, int parentId) {
     SaveRecursive(output, node->nextSibling, parentId);
 }
 }
-
 bool LoadFromCsv(const std::string& filePath, FamilyTree& familyTree) {
     std::ifstream input(filePath.c_str());
     if (!input.is_open()) {
@@ -101,7 +99,6 @@ bool LoadFromCsv(const std::string& filePath, FamilyTree& familyTree) {
     while (head) { PendingRecord* item = head; head = head->next; delete item; }
     return true;
 }
-
 bool SaveToCsv(const std::string& filePath, const FamilyTree& familyTree) {
     std::ofstream output(filePath.c_str(), std::ios::binary); if (!output.is_open()) return false;
     output.write("\xEF\xBB\xBF", 3);
