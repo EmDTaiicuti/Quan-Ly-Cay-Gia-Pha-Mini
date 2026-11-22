@@ -1,5 +1,4 @@
 
-#define UI_H
 #include "FamilyNode.h"
 #include "Auth.h"
 #include "Registry.h"
