@@ -6,7 +6,6 @@
 #include "Registry.h"
 #include <iostream>
 #include <stdexcept>
-
 int main() {
     FamilyTree familyTree; InitializeTree(familyTree);
     AccountList accounts; AchievementList achievements; RuleList rules;
