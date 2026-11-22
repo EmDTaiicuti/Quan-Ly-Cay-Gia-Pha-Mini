@@ -8,13 +8,7 @@
 #include <iomanip>
     }
 }
-Mee
-    do { member.birthDate = ReadLine("Ngay sinh (DD/MM/YYYY): "); if (!IsValidDate(member.birthDate)) std::cout << "Ngay sinh khong hop le.\n"; } while (!IsValidDate(member.birthDate));
-    member.deathDate = ReadLine("Ngay mat (DD/MM/YYYY, bo trong neu chua ro/con song): ");
-    while (!member.deathDate.empty() && (!IsValidDate(member.deathDate) || CompareDates(member.deathDate, member.birthDate) < 0)) {
-        std::cout << "Ngay mat phai hop le va khong som hon ngay sinh.\n";
-        member.deathDate = ReadLine("Ngay mat (DD/MM/YYYY): ");
-    }
+
     member.hometown = ReadLine("Que quan: "); member.biography = ReadLine("Tieu su: ");
     member.photoPath = ReadLine("Duong dan anh (tuy chon): "); member.notes = ReadLine("Ghi chu: ");
     return member;
