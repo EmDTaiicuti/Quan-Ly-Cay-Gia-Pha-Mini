@@ -1,15 +1,4 @@
 
-    } else if (choice == 3) {
-        PrintRules(rules, std::cout, true);
-        std::cout << (DeactivateRule(rules, ReadInt("ID quy uoc: ")) ? "Da ngung ap dung.\n" : "Khong tim thay quy uoc dang ap dung.\n");
-    } else PrintRules(rules, std::cout, true);
-}
-void SaveAll(const std::string& familyPath, FamilyTree& tree, AccountList& accounts,
-             AchievementList& achievements, RuleList& rules) {
-    bool ok = SaveToCsv(familyPath, tree) && SaveAccounts("accounts.csv", accounts) &&
-              SaveAchievements("achievements.csv", achievements) && SaveRules("family_rules.csv", rules);
-    std::cout << (ok ? "Da luu toan bo du lieu.\n" : "Luu that bai; kiem tra quyen ghi file.\n");
-}
 }
 
 void PrintFamilyTree(Node* root) {
