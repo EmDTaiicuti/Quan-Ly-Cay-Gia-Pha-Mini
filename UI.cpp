@@ -1,17 +1,4 @@
 
-    if (choice == 1) {
-        int memberId = ReadInt("ID thanh vien: "); if (!FindMember(tree.root, memberId)) { std::cout << "ID khong ton tai.\n"; return; }
-        int year = ReadInt("Nam: "); std::string title = ReadLine("Thanh tich: "), org = ReadLine("To chuc: "), desc = ReadLine("Mo ta: ");
-        std::cout << (AddAchievement(list, memberId, year, title, org, desc) ? "Da them.\n" : "Du lieu khong hop le.\n");
-    } else if (choice == 2) PrintAchievements(list, ReadInt("ID thanh vien: "), std::cout);
-    else if (choice == 3) std::cout << (RemoveAchievement(list, ReadInt("ID thanh tich: ")) ? "Da xoa.\n" : "Khong tim thay.\n");
-}
-void RuleMenu(RuleList& rules, bool admin) {
-    if (!admin) { PrintRules(rules, std::cout, false); return; }
-    int choice = ReadInt("1. Xem quy uoc  2. Them quy uoc  3. Ngung ap dung\nLua chon: ");
-    if (choice == 2) {
-        std::string title = ReadLine("Tieu de: "), content = ReadLine("Noi dung: "), date = ReadLine("Ngay hieu luc DD/MM/YYYY: ");
-        std::cout << (AddRule(rules, title, content, date) ? "Da them quy uoc.\n" : "Du lieu khong hop le.\n");
     } else if (choice == 3) {
         PrintRules(rules, std::cout, true);
         std::cout << (DeactivateRule(rules, ReadInt("ID quy uoc: ")) ? "Da ngung ap dung.\n" : "Khong tim thay quy uoc dang ap dung.\n");
