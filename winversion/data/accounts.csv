@@ -1,2 +1,5 @@
 ﻿username,email,salt,passwordHash,memberId,role,active
 admin,admin@family.local,18e15d8b1de52aa4518e151fbb320a456,d251b85f2eae4405,0,A,1
+test,,32bf15cffbf74e9c30d100b2ef909282,bc5ab767f08c7d1a,0,A,1
+LeVan,,18e5fed2c44f2ccc518e5f2a03b264eeb6d15ba1852b02a4,6ef469af984b5e23,0,S,1
+sv123,,d5b9f3d39d779b9e01937357efe36f15,195dd8956b76a0de,0,A,1
