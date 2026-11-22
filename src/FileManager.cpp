@@ -8,6 +8,7 @@ struct PendingRecord {
     Member member; int parentId; bool built; PendingRecord* next;
     PendingRecord() : member(), parentId(0), built(false), next(0) {}
 };
+
 std::string EscapeCsv(const std::string& value) {
     bool quote = false; std::string result;
     for (std::size_t i = 0; i < value.size(); ++i) {
@@ -16,6 +17,7 @@ std::string EscapeCsv(const std::string& value) {
     }
     return quote ? "\"" + result + "\"" : result;
 }
+
 bool ParseCsv(const std::string& line, std::string fields[], int capacity, int& count) {
     count = 0; std::string field; bool quoted = false;
     for (std::size_t i = 0; i < line.size(); ++i) {
@@ -31,16 +33,20 @@ bool ParseCsv(const std::string& line, std::string fields[], int capacity, int& 
     if (quoted || count >= capacity) return false;
     fields[count++] = field; return true;
 }
+
 bool ToInt(const std::string& text, int& value) {
     std::istringstream input(text); input >> value; return input && input.eof();
 }
+
 void StripBom(std::string& line) {
     if (line.size() >= 3 && static_cast<unsigned char>(line[0]) == 0xEF &&
         static_cast<unsigned char>(line[1]) == 0xBB && static_cast<unsigned char>(line[2]) == 0xBF) line.erase(0, 3);
 }
+
 void AppendPending(PendingRecord*& head, PendingRecord*& tail, PendingRecord* item) {
     if (!head) head = tail = item; else { tail->next = item; tail = item; }
 }
+
 bool ReadRecord(const std::string& line, PendingRecord*& head, PendingRecord*& tail) {
     std::string fields[12]; int count = 0;
     if (!ParseCsv(line, fields, 12, count) || (count != 7 && count != 12)) return false;
@@ -57,6 +63,7 @@ bool ReadRecord(const std::string& line, PendingRecord*& head, PendingRecord*& t
     }
     AppendPending(head, tail, item); return true;
 }
+
 void SaveRecursive(std::ofstream& output, Node* node, int parentId) {
     if (!node) return;
     const Member& m = node->member;
