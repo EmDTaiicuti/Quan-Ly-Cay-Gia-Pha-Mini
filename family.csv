@@ -1,4 +1,4 @@
-﻿id,parentId,spouseId,name,gender,birthDate_DD/MM/YYYY,deathDate_DD/MM/YYYY,hometown,biography,photoPath,isInLaw,notes
+﻿id,parentId,spouseId,name,gender,birthDate_DD/MM/YYYY,deathDate_DD/MM/YYYY,hometown,biography,photoPath,isInLaw,notes.
 1,0,2,Nguyễn Văn Hùng,M,14/06/1945,,,,,1,Mất năm 2020.
 3,1,4,Nguyễn Văn Minh,M,12/02/1970,,,,,1,Con trưởng.
 9,3,0,Nguyễn Minh Quân,M,18/01/1995,,,,,0,Con của Nguyễn Văn Minh và Trần Thị Lan.
