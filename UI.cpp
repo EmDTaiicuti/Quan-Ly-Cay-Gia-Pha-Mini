@@ -1,16 +1,5 @@
 
 
-}
-void AccountMenu(AccountList& accounts, FamilyTree& tree) {
-    std::cout << "1. Tao tai khoan nguoi xem\n2. Khoa tai khoan\n3. Liet ke tai khoan\n";
-    int choice = ReadInt("Lua chon: ");
-    if (choice == 1) {
-        std::string username = ReadLine("Ten dang nhap: "), email = ReadLine("Email: ");
-        std::string password = ReadLine("Mat khau (toi thieu 6 ky tu): "); int memberId = ReadInt("ID thanh vien lien ket (0 neu khong): ");
-        if (memberId && !FindMember(tree.root, memberId)) { std::cout << "ID thanh vien khong ton tai.\n"; return; }
-        std::cout << (CreateAccount(accounts, username, email, password, memberId, 'U') ? "Da tao tai khoan.\n" : "Tao that bai; ten/ID co the da duoc dung.\n");
-    } else if (choice == 2) {
-        std::string username = ReadLine("Tai khoan can khoa: ");
         std::cout << (DeactivateAccount(accounts, username) ? "Da khoa tai khoan.\n" : "Khong the khoa (khong co tai khoan hoac la admin).\n");
     } else if (choice == 3) {
         for (Account* a = accounts.head; a; a = a->next)
