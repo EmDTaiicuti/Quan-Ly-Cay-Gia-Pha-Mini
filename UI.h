@@ -1,5 +1,4 @@
 
-#include "Auth.h"
 #include "Registry.h"
 #include <string>
 void RunMenu(FamilyTree& familyTree, const std::string& familyPath,
