@@ -1,15 +1,4 @@
 
-
-        std::cout << (DeactivateAccount(accounts, username) ? "Da khoa tai khoan.\n" : "Khong the khoa (khong co tai khoan hoac la admin).\n");
-    } else if (choice == 3) {
-        for (Account* a = accounts.head; a; a = a->next)
-            std::cout << std::left << std::setw(20) << a->username << " | " << (a->role == 'A' ? "ADMIN" : "USER")
-                      << " | member=" << a->memberId << " | " << (a->active ? "active" : "locked") << '\n';
-    }
-}
-void AchievementMenu(AchievementList& list, FamilyTree& tree) {
-    std::cout << "1. Them thanh tich\n2. Xem thanh tich theo thanh vien\n3. Xoa thanh tich\n";
-    int choice = ReadInt("Lua chon: ");
     if (choice == 1) {
         int memberId = ReadInt("ID thanh vien: "); if (!FindMember(tree.root, memberId)) { std::cout << "ID khong ton tai.\n"; return; }
         int year = ReadInt("Nam: "); std::string title = ReadLine("Thanh tich: "), org = ReadLine("To chuc: "), desc = ReadLine("Mo ta: ");
