@@ -1,19 +1,4 @@
 
-    if (!Login(accounts, current)) { std::cout << "Dang nhap that bai.\n"; return; }
-    int choice;
-    do {
-        FamilyStats stats = ComputeStats(tree.root); const bool admin = current->role == 'A';
-        std::cout << "\n\x1B[96m  +================================================================+\n"
-                  << "  |                 GIA PHA  /  FAMILY TREE                         |\n"
-                  << "  +================================================================+\n\x1B[0m"
-                  << "  Thanh vien: " << stats.totalMembers << " | The he: " << stats.generationCount
-                  << " | Tai khoan: " << current->username << (admin ? " [ADMIN]\n" : " [USER]\n")
-                  << "  01  In so do gia pha             02  Liet ke theo the he (BFS)\n"
-                  << "  03  Tim theo ID                  04  Tim ten gan dung\n"
-                  << "  05  Xem thanh tich               06  Xem quy uoc gia toc\n"
-                  << "  07  Tim to tien / khoang cach    08  Thong ke theo nam\n";
-        if (admin) std::cout << "  09  Them thanh vien              10  Sua ho so\n"
-                             << "  11  Xoa nhanh                     12  Sap xep con theo nam sinh\n"
                              << "  13  Quan ly tai khoan             14  Quan ly thanh tich\n"
                              << "  15  Them quy uoc                  16  Luu du lieu\n";
         else std::cout << "  16  Luu du lieu\n";
