@@ -146,32 +146,4 @@ void RunMenu(FamilyTree& tree, const std::string& familyPath, AccountList& accou
             case 7: RelationshipMenu(tree); break;
             case 8: StatisticsMenu(tree, achievements); break;
             case 9: if (admin) AddMenu(tree); else std::cout << "Khong du quyen.\n"; break;
-            case 10: if (admin) EditMenu(tree); else std::cout << "Khong du quyen.\n"; break;
-           case 11: {
-            if (admin) {
-                int id = ReadInt("ID can xoa: ");
-     \
-                int id = ReadInt("Nhap ID cha/me can sap xep con: ");
-                Node* parent = FindMember(tree.root, id);
-                if (parent) {
-                    SortChildrenOf(parent);
-                    std::cout << "Da sap xep danh sach con theo ngay sinh.\n";
-                } else {
-                    std::cout << "Khong tim thay ID.\n";
-                }
-            } else {
-                std::cout << "Khong du quyen.\n";
-            }
-            break;
-        }
-        case 13: if (admin) AccountMenu(accounts, tree); else std::cout << "Khong du quyen.\n"; break;
-        case 14: if (admin) AchievementMenu(achievements, tree); else std::cout << "Khong du quyen.\n"; break;
-        case 15: if (admin) RuleMenu(rules, true); else std::cout << "Khong du quyen.\n"; break;
-        case 16: SaveAll(familyPath, tree, accounts, achievements, rules); break;
-        case 0: break;
-        default: std::cout << "Lua chon khong hop le.\n"; break;
-        }
-    } while (choice != 0);
-
-    SaveAll(familyPath, tree, accounts, achievements, rules);
-}
+            case 10: if (admin) EditMenu(tree); else std::cout << 
