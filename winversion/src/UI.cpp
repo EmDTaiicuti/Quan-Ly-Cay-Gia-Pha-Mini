@@ -10,7 +10,6 @@
 #ifdef _WIN32
 #include <windows.h>
 #endif
-
 namespace {
 std::string ReadLine(const std::string& prompt) {
     std::string value; std::cout << prompt;
