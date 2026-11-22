@@ -6,21 +6,6 @@
 #include <iostream>
 #include <limits>
 #include <iomanip>
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
-namespace {
-std::string ReadLine(const std::string& prompt) {
-    std::string value; std::cout << prompt;
-    if (!std::getline(std::cin, value)) { std::cin.clear(); return ""; }
-    return value;
-}
-int ReadInt(const std::string& prompt) {
-    while (true) {
-        std::string value = ReadLine(prompt); char* end = 0; long number = std::strtol(value.c_str(), &end, 10);
-        if (end != value.c_str() && *end == '\0' && number >= -2147483647L && number <= 2147483647L) return static_cast<int>(number);
-        std::cout << "Gia tri khong hop le, vui long nhap so nguyen.\n";
     }
 }
 Member ReadMember(bool readId) {
