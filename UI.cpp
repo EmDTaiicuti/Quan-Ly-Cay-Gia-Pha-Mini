@@ -4,45 +4,7 @@
 #include "FileManager.h"
 #include <cstdlib>
 #include <iostream>
-#include <limits>
-#include <iomanip>
-    }
-}
 
-
-              << "\nGhi chu: " << (m.notes.empty() ? "--" : m.notes) << '\n';
-}
-bool Login(AccountList& accounts, Account*& current) {
-    if (!HasAdminAccount(accounts)) {
-        std::cout << "\n=== KHOI TAO TAI KHOAN TRUONG TOC (ADMIN) ===\n"
-                  << "Tao admin lan dau; mat khau toi thieu 6 ky tu.\n";
-        for (;;) {
-            std::string username = ReadLine("Ten dang nhap admin: ");
-            std::string email = ReadLine("Email: ");
-            std::string password = ReadLine("Mat khau: ");
-            std::string confirm = ReadLine("Nhap lai mat khau: ");
-            if (password != confirm) { std::cout << "Mat khau khong khop.\n"; continue; }
-            if (!CreateAccount(accounts, username, email, password, 0, 'A')) { std::cout << "Thong tin khong hop le/ten da ton tai.\n"; continue; }
-            std::cout << "Da tao tai khoan admin.\n"; break;
-        }
-    }
-    for (int attempt = 0; attempt < 5; ++attempt) {
-        std::cout << "\n=== DANG NHAP GIA PHA ===\n";
-        std::string username = ReadLine("Tai khoan: "); std::string password = ReadLine("Mat khau: ");
-        current = Authenticate(accounts, username, password);
-        if (current) { std::cout << "Xin chao " << current->username << " (" << (current->role == 'A' ? "ADMIN" : "USER") << ").\n"; return true; }
-        std::cout << "Sai thong tin hoac tai khoan da bi khoa. Con " << (4 - attempt) << " lan thu.\n";
-    }
-    return false;
-}
-void AddMenu(FamilyTree& tree) {
-    std::cout << "1. Them goc dong ho\n2. Them con\n3. Them vo/chong\n";
-    int choice = ReadInt("Lua chon: "); Member member = ReadMember(true); bool success = false;
-    if (choice == 1) success = AddRoot(tree, member);
-    else if (choice == 2) success = AddChild(tree, ReadInt("ID cha/me: "), member);
-    else if (choice == 3) {
-        int id = ReadInt("ID thanh vien: "); member.isInLaw = true; success = AddSpouse(tree, id, member);
-    } else { std::cout << "Lua chon khong hop le.\n"; return; }
     std::cout << (success ? "Da them thanh vien.\n" : "That bai: ID trung/khong hop le hoac ngay sinh con som hon cha/me.\n");
 }
 void EditMenu(FamilyTree& tree) {
