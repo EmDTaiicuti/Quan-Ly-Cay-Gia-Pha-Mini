@@ -16,21 +16,7 @@ std::string EscapeCsv(const std::string& value) {
     }
     return quote ? "\"" + result + "\"" : result;
 }
-bool ParseCsv(const std::string& line, std::string fields[], int capacity, int& count) {
-    count = 0; std::string field; bool quoted = false;
-    for (std::size_t i = 0; i < line.size(); ++i) {
-        char ch = line[i];
-        if (ch == '"') {
-            if (quoted && i + 1 < line.size() && line[i + 1] == '"') { field += '"'; ++i; }
-            else quoted = !quoted;
-        } else if (ch == ',' && !quoted) {
-            if (count >= capacity) return false;
-            fields[count++] = field; field.clear();
-        } else field += ch;
-    }
-    if (quoted || count >= capacity) return false;
-    fields[count++] = field; return true;
-}
+
 bool ToInt(const std::string& text, int& value) {
     std::istringstream input(text); input >> value; return input && input.eof();
 }
