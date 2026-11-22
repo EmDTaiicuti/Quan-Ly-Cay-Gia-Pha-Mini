@@ -8,15 +8,7 @@
 #include <iomanip>
     }
 }
-Member ReadMember(bool readId) {
-    Member member;
-    if (readId) member.id = ReadInt("ID (so nguyen duong): ");
-    member.name = ReadLine("Ho ten: ");
-    while (true) {
-        std::string gender = ReadLine("Gioi tinh (M/F/O): ");
-        if (gender.size() == 1 && (gender[0] == 'M' || gender[0] == 'F' || gender[0] == 'O')) { member.gender = gender[0]; break; }
-        std::cout << "Chi chap nhan M, F hoac O.\n";
-    }
+Mee
     do { member.birthDate = ReadLine("Ngay sinh (DD/MM/YYYY): "); if (!IsValidDate(member.birthDate)) std::cout << "Ngay sinh khong hop le.\n"; } while (!IsValidDate(member.birthDate));
     member.deathDate = ReadLine("Ngay mat (DD/MM/YYYY, bo trong neu chua ro/con song): ");
     while (!member.deathDate.empty() && (!IsValidDate(member.deathDate) || CompareDates(member.deathDate, member.birthDate) < 0)) {
