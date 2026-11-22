@@ -9,18 +9,7 @@
     }
 }
 
-    member.hometown = ReadLine("Que quan: "); member.biography = ReadLine("Tieu su: ");
-    member.photoPath = ReadLine("Duong dan anh (tuy chon): "); member.notes = ReadLine("Ghi chu: ");
-    return member;
-}
-void ShowMember(const Member& m) {
-    std::cout << "\n+--------------------- HO SO THANH VIEN ---------------------+\n"
-              << "ID: " << m.id << " | Ho ten: " << m.name << " | Gioi tinh: " << m.gender
-              << " | Sinh: " << m.birthDate << " | Mat: " << (m.deathDate.empty() ? "--" : m.deathDate)
-              << "\nQue quan: " << (m.hometown.empty() ? "--" : m.hometown)
-              << "\nVo/chong ID: " << m.spouseId << " | Ket hon vao dong ho: " << (m.isInLaw ? "Co" : "Khong")
-              << "\nTieu su: " << (m.biography.empty() ? "--" : m.biography)
-              << "\nAnh: " << (m.photoPath.empty() ? "--" : m.photoPath)
+
               << "\nGhi chu: " << (m.notes.empty() ? "--" : m.notes) << '\n';
 }
 bool Login(AccountList& accounts, Account*& current) {
