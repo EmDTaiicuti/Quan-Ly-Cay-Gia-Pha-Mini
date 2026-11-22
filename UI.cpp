@@ -1,9 +1,5 @@
 
-  
-}
-void StatisticsMenu(FamilyTree& tree, AchievementList& achievements) {
-    FamilyStats stats = ComputeStats(tree.root);
-    std::cout << "Tong thanh vien: " << stats.totalMembers << "\nNam: " << stats.maleCount
+Nam: " << stats.maleCount
               << "\nNu: " << stats.femaleCount << "\nKhac: " << stats.otherCount
               << "\nSo the he: " << stats.generationCount << '\n';
     int year = ReadInt("Nam thong ke (0 bo qua): ");
