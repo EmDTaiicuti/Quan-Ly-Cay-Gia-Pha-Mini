@@ -2,7 +2,6 @@
 #include "TreeCore.h"
 #include <fstream>
 #include <sstream>
-
 namespace {
 std::string Escape(const std::string& value) {
     std::string result; bool quote = false;
@@ -32,11 +31,9 @@ bool ParseInt(const std::string& text, int& value) {
     std::istringstream input(text); input >> value; return input && input.eof();
 }
 }
-
 void DestroyAchievements(AchievementList& list) {
     while (list.head) { Achievement* item = list.head; list.head = item->next; delete item; }
 }
-
 bool LoadAchievements(const std::string& path, AchievementList& list) {
     std::ifstream input(path.c_str());
     if (!input.is_open()) {
@@ -54,7 +51,6 @@ bool LoadAchievements(const std::string& path, AchievementList& list) {
     }
     return true;
 }
-
 bool SaveAchievements(const std::string& path, const AchievementList& list) {
     std::ofstream output(path.c_str(), std::ios::binary); if (!output.is_open()) return false;
     output.write("\xEF\xBB\xBF", 3);
@@ -64,7 +60,6 @@ bool SaveAchievements(const std::string& path, const AchievementList& list) {
                << Escape(a->organization) << ',' << Escape(a->description) << '\n';
     return output.good();
 }
-
 bool AddAchievement(AchievementList& list, int memberId, int year, const std::string& title,
                     const std::string& organization, const std::string& description) {
     if (memberId <= 0 || year < 1 || title.empty()) return false;
@@ -74,14 +69,12 @@ bool AddAchievement(AchievementList& list, int memberId, int year, const std::st
     Achievement** link = &list.head; while (*link) link = &((*link)->next); *link = item;
     return true;
 }
-
 bool RemoveAchievement(AchievementList& list, int id) {
     Achievement** link = &list.head;
     while (*link && (*link)->id != id) link = &((*link)->next);
     if (!*link) return false;
     Achievement* item = *link; *link = item->next; delete item; return true;
 }
-
 void PrintAchievements(const AchievementList& list, int memberId, std::ostream& output) {
     bool found = false;
     for (Achievement* a = list.head; a; a = a->next) if (a->memberId == memberId) {
@@ -90,11 +83,9 @@ void PrintAchievements(const AchievementList& list, int memberId, std::ostream& 
     }
     if (!found) output << "  Chua co thanh tich duoc ghi nhan.\n";
 }
-
 void DestroyRules(RuleList& list) {
     while (list.head) { FamilyRule* item = list.head; list.head = item->next; delete item; }
 }
-
 bool LoadRules(const std::string& path, RuleList& list) {
     std::ifstream input(path.c_str());
     if (!input.is_open()) {
@@ -112,7 +103,6 @@ bool LoadRules(const std::string& path, RuleList& list) {
     }
     return true;
 }
-
 bool SaveRules(const std::string& path, const RuleList& list) {
     std::ofstream output(path.c_str(), std::ios::binary); if (!output.is_open()) return false;
     output.write("\xEF\xBB\xBF", 3);
@@ -122,7 +112,6 @@ bool SaveRules(const std::string& path, const RuleList& list) {
                << Escape(r->effectiveDate) << ',' << (r->active ? 1 : 0) << '\n';
     return output.good();
 }
-
 bool AddRule(RuleList& list, const std::string& title, const std::string& content,
              const std::string& effectiveDate) {
     if (title.empty() || content.empty() || !IsValidDate(effectiveDate)) return false;
@@ -132,7 +121,6 @@ bool AddRule(RuleList& list, const std::string& title, const std::string& conten
     FamilyRule** link = &list.head; while (*link) link = &((*link)->next); *link = item;
     return true;
 }
-
 void PrintRules(const RuleList& list, std::ostream& output, bool includeInactive) {
     bool found = false;
     for (FamilyRule* r = list.head; r; r = r->next) if (r->active || includeInactive) {
@@ -142,7 +130,6 @@ void PrintRules(const RuleList& list, std::ostream& output, bool includeInactive
     }
     if (!found) output << "  Chua co quy dinh.\n";
 }
-
 bool DeactivateRule(RuleList& list, int id) {
     for (FamilyRule* rule = list.head; rule; rule = rule->next) {
         if (rule->id == id && rule->active) { rule->active = false; return true; }
