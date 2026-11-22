@@ -228,17 +228,7 @@ void RunMenu(FamilyTree& tree, const std::string& familyPath, AccountList& accou
            case 11: {
             if (admin) {
                 int id = ReadInt("ID can xoa: ");
-                std::string answer = ReadLine("Xoa ca nhanh con (y/n)? ");
-                if (answer == "y" || answer == "Y") {
-                    std::cout << (DeleteBranch(tree, id) ? "Da xoa nhanh.\n" : "Xoa that bai.\n");
-                }
-            } else {
-                std::cout << "Khong du quyen.\n";
-            }
-            break;
-        }
-        case 12: {
-            if (admin) {
+     \
                 int id = ReadInt("Nhap ID cha/me can sap xep con: ");
                 Node* parent = FindMember(tree.root, id);
                 if (parent) {
