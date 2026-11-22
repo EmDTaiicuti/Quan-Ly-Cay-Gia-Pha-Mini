@@ -1,21 +1,4 @@
 
-}
-
-void PrintFamilyTree(Node* root) {
-    if (!root) { std::cout << "(Cay gia pha dang rong)\n"; return; }
-   BfsPrintByGeneration(root);
-}
-
-void RunMenu(FamilyTree& tree, const std::string& familyPath, AccountList& accounts,
-             AchievementList& achievements, RuleList& rules) {
-#ifdef _WIN32
-    // File CSV dung UTF-8; dat code page console UTF-8 de tranh loi mojibake tieng Viet.
-    SetConsoleOutputCP(CP_UTF8);
-    SetConsoleCP(CP_UTF8);
-    HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE); DWORD mode = 0;
-    if (handle != INVALID_HANDLE_VALUE && GetConsoleMode(handle, &mode)) SetConsoleMode(handle, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
-#endif
-    Account* current = 0;
     if (!Login(accounts, current)) { std::cout << "Dang nhap that bai.\n"; return; }
     int choice;
     do {
