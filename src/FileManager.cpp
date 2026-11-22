@@ -102,7 +102,6 @@ bool LoadFromCsv(const std::string& filePath, FamilyTree& familyTree) {
     return true;
 }
 
-
 bool SaveToCsv(const std::string& filePath, const FamilyTree& familyTree) {
     std::ofstream output(filePath.c_str(), std::ios::binary); if (!output.is_open()) return false;
     output.write("\xEF\xBB\xBF", 3);
