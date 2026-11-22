@@ -1,21 +1,5 @@
 
-    // Tìm con trỏ Node* từ ID
-    Node* node1 = FindMember(tree.root, first);
-    Node* node2 = FindMember(tree.root, second);
-
-    if (!node1 || !node2) {
-        std::cout << "Khong tim thay thanh vien.\n";
-        return;
-    }
-
-    Node* ancestor = FindLca(node1, node2);
-    int distance = FamilyDistance(node1, node2);
-
-    if (!ancestor || distance < 0) 
-        std::cout << "Khong tim thay du ca hai thanh vien trong cung nhanh.\n";
-    else 
-        std::cout << "To tien chung gan nhat: " << ancestor->member.name << " (ID " << ancestor->member.id
-                  << ")\nKhoang cach: " << distance << " canh cha-con.\n";
+  
 }
 void StatisticsMenu(FamilyTree& tree, AchievementList& achievements) {
     FamilyStats stats = ComputeStats(tree.root);
