@@ -8,7 +8,14 @@ struct PendingRecord {
     Member member; int parentId; bool built; PendingRecord* next;
     PendingRecord() : member(), parentId(0), built(false), next(0) {}
 };
-
+std::string EscapeCsv(const std::string& value) {
+    bool quote = false; std::string result;
+    for (std::size_t i = 0; i < value.size(); ++i) {
+        if (value[i] == ',' || value[i] == '"' || value[i] == '\n' || value[i] == '\r') quote = true;
+        if (value[i] == '"') result += "\"\""; else result += value[i];
+    }
+    return quote ? "\"" + result + "\"" : result;
+}
 bool ParseCsv(const std::string& line, std::string fields[], int capacity, int& count) {
     count = 0; std::string field; bool quoted = false;
     for (std::size_t i = 0; i < line.size(); ++i) {
